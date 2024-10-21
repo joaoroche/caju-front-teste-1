@@ -80,7 +80,7 @@ const ActionModal = ({
           <Styles.ModalTitle id="modal-title">{title}</Styles.ModalTitle>
           <p id="modal-message" aria-live="polite">{message}</p>
           <Styles.ButtonContainer>
-            <Button ref={confirmButtonRef} onClick={onApprove} autoFocus>
+            <Button ref={confirmButtonRef} onClick={onApprove} autoFocus data-testid="confirm-button">
               Confirmar
             </Button>
             <Styles.CancelButton onClick={onReject}>Cancelar</Styles.CancelButton>
