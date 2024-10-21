@@ -26,7 +26,8 @@ export const useGetRegistrations = ({ params }: GetRegistrationsParams) => {
 
   useEffect(() => {
     fetchData();
-  }, [params?.cpf]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [params.cpf]);
 
   return { data, loading, error, isError, refetch: fetchData };
 };
