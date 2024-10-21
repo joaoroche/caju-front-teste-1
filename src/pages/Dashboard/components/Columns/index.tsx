@@ -24,6 +24,8 @@ const Columns = (props: Props) => {
               
               <S.CollumContent>
                 {props?.registrations?.map((registration) => {
+                  if (registration.status !== collum.status) return null;
+
                   return (
                     <RegistrationCard
                       data={registration}
