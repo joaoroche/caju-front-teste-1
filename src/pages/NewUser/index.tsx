@@ -14,10 +14,11 @@ import { formatCpf } from "~/utils/functions/formatCPF";
 import { usePostRegistrations } from "~/hooks/registrations/post/usePostRegistrations";
 import { toast } from "react-toastify";
 import { randomId } from "~/utils/functions/randomId";
+import { formatDate } from "~/utils/functions/formatDate";
 
 const NewUserPage = () => {
   const history = useHistory();
-  const { mutateAsync, error } = usePostRegistrations()
+  const { mutateAsync, error, loading } = usePostRegistrations()
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -31,7 +32,7 @@ const NewUserPage = () => {
     cpf: "",
   });
 
-    const validateForm = useCallback(() => {
+  const validateForm = useCallback(() => {
     const newErrors = { name: "", email: "", cpf: "" };
 
     if (!validateName(form.name)) {
@@ -58,7 +59,7 @@ const NewUserPage = () => {
           employeeName: form.name,
           email: form.email,
           cpf: extractNumbers(form.cpf),
-          admissionDate: form.admissionDate,
+          admissionDate: formatDate(form.admissionDate),
           id: randomId(),
           status: "REVIEW"
         },
@@ -130,7 +131,7 @@ const NewUserPage = () => {
           onChange={handleInputChange}
         />
 
-        <Button onClick={handleSubmit}>Cadastrar</Button>
+        <Button onClick={handleSubmit} disable={loading}>Cadastrar</Button>
       </S.Card>
     </S.Container>
   );
