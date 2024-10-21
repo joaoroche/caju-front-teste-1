@@ -1,0 +1,1 @@
+export { deleteRegistrations } from './deleteRegistrations'

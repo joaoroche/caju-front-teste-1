@@ -1,0 +1,1 @@
+export { postRegistrations } from './postRegistrations'
