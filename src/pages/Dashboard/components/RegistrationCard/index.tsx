@@ -10,6 +10,9 @@ import { usePutRegistrations } from "~/hooks/registrations/put/usePutRegistratio
 import { RegistrationProps } from "~/@types/registrations";
 import { useDeleteRegistrations } from "~/hooks/registrations/delete/useDeleteRegistrations";
 
+const STATUS_RENDER_APPROVED_AND_DISAPPROVED = ["REVIEW"]
+const STATUS_RENDER_REVIEW = ["APPROVED", "REPROVED"]
+
 type Props = {
   data: RegistrationProps;
   refetch?: () => void;
@@ -56,6 +59,11 @@ const RegistrationCard = (props: Props) => {
     });
   }
 
+  // - O botão de `Reprovar` e `Aprovar` só deve aparecer em admissões com o status `REVIEW` 
+const renderApprovedAndDisapprovedButtons = STATUS_RENDER_APPROVED_AND_DISAPPROVED.includes(props.data.status)
+
+const renderReviewButton = STATUS_RENDER_REVIEW.includes(props.data.status)
+
   return (
     <S.Card data-testid="registration-card">
       <S.IconAndText>
@@ -77,32 +85,38 @@ const RegistrationCard = (props: Props) => {
       </S.IconAndText>
 
       <S.Actions>
-        <ButtonSmall
-          bgcolor="rgb(255, 145, 154)"
-          aria-label={`Reprovar ${props.data.employeeName}`}
-          data-testid="disapprove-button"
-          onClick={handleDisapprove}
-        >
-          Reprovar
-        </ButtonSmall>
+        {renderApprovedAndDisapprovedButtons && (
+          <>
+            <ButtonSmall
+              bgcolor="rgb(255, 145, 154)"
+              aria-label={`Reprovar ${props.data.employeeName}`}
+              data-testid="disapprove-button"
+              onClick={handleDisapprove}
+            >
+              Reprovar
+            </ButtonSmall>
 
-        <ButtonSmall
-          bgcolor="rgb(155, 229, 155)"
-          aria-label={`Aprovar ${props.data.employeeName}`}
-          data-testid="approve-button"
-          onClick={handleApprove}
-        >
-          Aprovar
-        </ButtonSmall>
+            <ButtonSmall
+              bgcolor="rgb(155, 229, 155)"
+              aria-label={`Aprovar ${props.data.employeeName}`}
+              data-testid="approve-button"
+              onClick={handleApprove}
+            >
+              Aprovar
+            </ButtonSmall>
+          </>
+        )}
 
-        <ButtonSmall
-          bgcolor="#ff8858"
-          aria-label={`Revisar novamente ${props.data.employeeName}`}
-          data-testid="review-button"
-          onClick={handleReview}
-        >
-          Revisar novamente
-        </ButtonSmall>
+        {renderReviewButton && (
+          <ButtonSmall
+            bgcolor="#ff8858"
+            aria-label={`Revisar novamente ${props.data.employeeName}`}
+            data-testid="review-button"
+            onClick={handleReview}
+          >
+            Revisar novamente
+          </ButtonSmall>
+        )}
 
         <HiOutlineTrash
           role="button"
