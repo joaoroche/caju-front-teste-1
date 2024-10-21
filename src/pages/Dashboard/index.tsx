@@ -4,15 +4,16 @@ import { SearchBar } from "./components/Searchbar";
 import { Loading } from "~/components/Loading";
 import { Error } from "~/components/Error";
 
-import { useGetRegistrations } from "~/hooks/registrations/get/useGetRegistrations";
+
 import { useGetQueryParams } from "~/hooks/window/useGetQueryParams";
+import { useGetRegistrations } from "~/hooks/registrations/get/useGetRegistrations";
 
 import * as S from "./styles";
 
 const DashboardPage = () => {
-  const queryParams = useGetQueryParams();
+  const { getParam } = useGetQueryParams();
   const { data, loading, isError, error } = useGetRegistrations({ 
-    params: { cpf: queryParams.get("cpf") || "" }
+    params: { cpf: getParam("cpf") || "" }
     });
 
   return (
