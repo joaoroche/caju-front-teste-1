@@ -9,6 +9,8 @@ import {
 import { usePutRegistrations } from "~/hooks/registrations/put/usePutRegistrations";
 import { RegistrationProps } from "~/@types/registrations";
 import { useDeleteRegistrations } from "~/hooks/registrations/delete/useDeleteRegistrations";
+import { useCallback, useState } from "react";
+import ActionModal from "~/components/Modal/Action";
 
 const STATUS_RENDER_APPROVED_AND_DISAPPROVED = ["REVIEW"]
 const STATUS_RENDER_REVIEW = ["APPROVED", "REPROVED"]
@@ -19,50 +21,116 @@ type Props = {
 };
 
 const RegistrationCard = (props: Props) => {
+  const [isOpenModalConfirmation, setIsOpenModalConfirmation] = useState({
+    isOpen: false,
+    title: "",
+    message: "",
+    onApprove: () => {},
+    onReject: () => {},
+  });
+
   const { mutateAsync: updatedRegistration } = usePutRegistrations()
   const { mutateAsync: deleteRegistration } = useDeleteRegistrations()
 
+  const handleOpenModalConfirmation = useCallback(({
+    title,
+    message,
+    onApprove,
+    onReject,
+  }: {
+    title: string;
+    message: string;
+    onApprove: () => void;
+    onReject: () => void;
+  }) => {
+    setIsOpenModalConfirmation({
+      isOpen: true,
+      title,
+      message,
+      onApprove,
+      onReject,
+    });
+  }, []);
+
+  const handleCloseModalConfirmation = useCallback(() => {
+    setIsOpenModalConfirmation({
+      isOpen: false,
+      title: "",
+      message: "",
+      onApprove: () => {},
+      onReject: () => {},
+    });
+  }, []);
+
   const handleApprove = async () => {
-    await updatedRegistration({ 
-      payload: {
-        ...props.data,
-        status: "APPROVED"
+    handleOpenModalConfirmation({
+      title: "Aprovar colaborador",
+      message: `Deseja aprovar o colaborador ${props.data.employeeName}?`,
+      onApprove: async () => {
+        await updatedRegistration({ 
+          payload: {
+            ...props.data,
+            status: "APPROVED"
+          },
+          onSuccess: () => props.refetch && props.refetch()
+        });
       },
-      onSuccess: () => props.refetch && props.refetch()
-    },);
+      onReject: handleCloseModalConfirmation
+    })
+    
   }
 
   const handleDisapprove = async () => {
-    await updatedRegistration({ 
-      payload: {
-        ...props.data,
-        status: "REPROVED"
+    handleOpenModalConfirmation({
+      title: "Reprovar colaborador",
+      message: `Deseja reprovar o colaborador ${props.data.employeeName}?`,
+      onApprove: async () => {
+        await updatedRegistration({ 
+          payload: {
+            ...props.data,
+            status: "REPROVED"
+          },
+          onSuccess: () => props.refetch && props.refetch()
+        });
       },
-      onSuccess: () => props.refetch && props.refetch()
-    });
+      onReject: handleCloseModalConfirmation
+    })
   }
 
   const handleReview = async () => {
-    await updatedRegistration({ 
-      payload: {
-        ...props.data,
-        status: "REVIEW"
+    handleOpenModalConfirmation({
+      title: "Revisar colaborador",
+      message: `Deseja revisar o colaborador ${props.data.employeeName} novamente?`,
+      onApprove: async () => {
+        await updatedRegistration({ 
+          payload: {
+            ...props.data,
+            status: "REVIEW"
+          },
+          onSuccess: () => props.refetch && props.refetch()
+        });
       },
-      onSuccess: () => props.refetch && props.refetch()
-    });
+      onReject: handleCloseModalConfirmation
+    })
   }
 
   const handleDelete = async () => {
-    await deleteRegistration({ 
-      id: props.data.id,
-      onSuccess: () => props.refetch && props.refetch()
-    });
+    handleOpenModalConfirmation({
+      title: "Remover colaborador",
+      message: `Deseja remover o colaborador ${props.data.employeeName}?`,
+      onApprove: async () => {
+        await deleteRegistration({ 
+          id: props.data.id,
+          onSuccess: () => props.refetch && props.refetch()
+        });
+      },
+      onReject: handleCloseModalConfirmation
+    })
   }
 
-  // - O botão de `Reprovar` e `Aprovar` só deve aparecer em admissões com o status `REVIEW` 
-const renderApprovedAndDisapprovedButtons = STATUS_RENDER_APPROVED_AND_DISAPPROVED.includes(props.data.status)
+  const renderApprovedAndDisapprovedButtons = STATUS_RENDER_APPROVED_AND_DISAPPROVED.includes(props.data.status)
 
-const renderReviewButton = STATUS_RENDER_REVIEW.includes(props.data.status)
+  const renderReviewButton = STATUS_RENDER_REVIEW.includes(props.data.status)
 
   return (
     <S.Card data-testid="registration-card">
@@ -126,6 +194,17 @@ const renderReviewButton = STATUS_RENDER_REVIEW.includes(props.data.status)
           onClick={handleDelete}
         />
       </S.Actions>
+
+      {isOpenModalConfirmation.isOpen && (
+        <ActionModal
+          isOpen={isOpenModalConfirmation.isOpen}
+          title={isOpenModalConfirmation.title}
+          message={isOpenModalConfirmation.message}
+          onClose={handleCloseModalConfirmation}
+          onApprove={isOpenModalConfirmation.onApprove}
+          onReject={isOpenModalConfirmation.onReject}
+        />
+      )}
     </S.Card>
   );
 };

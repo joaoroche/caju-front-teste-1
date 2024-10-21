@@ -14,6 +14,24 @@ const Button = styled.button`
   box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
   font-size: 16px;
   font-weight: 600;
+
+  &:hover {
+    background-color: #4c8b71;
+  } 
+
+  &:active {
+    background-color: #3d6b5a;
+  }
+
+  &:disabled {
+    background-color: #d3d3d3;
+    cursor: not-allowed;
+  }
+
+  &:focus {
+    background-color: #4c8b71;
+  }
+  
 `;
 
 export const ButtonSmall = styled.button<{
