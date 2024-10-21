@@ -67,7 +67,7 @@ const NewUserPage = () => {
           toast.error(error?.message || "Erro ao cadastrar usuário");
         },
         onSuccess: () => {
-          toast.success("Usuário cadastrado com sucesso");
+          toast.success(`Usuário ${form.name} cadastrado com sucesso`);
           goToHome();
         }
       })
