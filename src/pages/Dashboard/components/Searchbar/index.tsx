@@ -11,10 +11,11 @@ import { extractNumbers } from "~/utils/functions/extractNumbers";
 
 import * as S from "./styles";
 import { useGetQueryParams } from "~/hooks/window/useGetQueryParams";
+import { formatCpf } from "~/utils/functions/formatCpf";
 
 const REGEX_CPF_WITHOUT_MASK = /^\d{11}$/;
 
-export const SearchBar = () => {
+export const SearchBar = ({ refetch }: {refetch: () => void}) => {
   const history = useHistory();
   const { getParam } = useGetQueryParams();
   const [search, setSearch] = useState(getParam("cpf") || "");
@@ -29,7 +30,9 @@ export const SearchBar = () => {
   const handleSearch = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       const valueWithOnlyNumbers = extractNumbers(event.target.value);
-      setSearch(valueWithOnlyNumbers);
+      const formattedValue = formatCpf(event.target.value);
+      
+      setSearch(formattedValue);
 
       const isCpfValid = REGEX_CPF_WITHOUT_MASK.test(valueWithOnlyNumbers);
       setSearchError(!isCpfValid && valueWithOnlyNumbers.length > 0);
@@ -43,23 +46,23 @@ export const SearchBar = () => {
     [searchUser]
   );
 
-  
   return (
     <S.Container>
-      <TextField  
+      <TextField
         name="search"
-        type="number"
+        type="text"
         title="Buscar por CPF"
-        placeholder="Digite um CPF válido" 
-        data-slots="_"
-        data-accept={/\d/}
+        placeholder="Digite um CPF válido"
         value={search}
         error={searchError ? "CPF inválido" : ""}
         onChange={handleSearch}
+        maxLength={14} 
       />
       
       <S.Actions>
-        <IconButton aria-label="refetch">
+        <IconButton 
+          aria-label="Recarregar página"
+          onClick={() => refetch()}>
           <HiRefresh />
         </IconButton>
 

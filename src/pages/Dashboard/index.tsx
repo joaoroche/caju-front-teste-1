@@ -22,7 +22,7 @@ const DashboardPage = () => {
       {isError ? <Error error={error as AxiosError}/> : null}
       {data ? (
         <>
-          <SearchBar />
+          <SearchBar refetch={refetch} />
           <Columns registrations={data} refetch={refetch} />
         </>
       ) : null}
