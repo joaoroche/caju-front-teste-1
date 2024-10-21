@@ -11,7 +11,7 @@ const allColumns = [
 type Props = {
   registrations?: any[];
 };
-const Collumns = (props: Props) => {
+const Columns = (props: Props) => {
   return (
     <S.Container>
       {allColumns.map((collum) => {
@@ -21,6 +21,7 @@ const Collumns = (props: Props) => {
               <S.TitleColumn status={collum.status}>
                 {collum.title}
               </S.TitleColumn>
+              
               <S.CollumContent>
                 {props?.registrations?.map((registration) => {
                   return (
@@ -38,4 +39,4 @@ const Collumns = (props: Props) => {
     </S.Container>
   );
 };
-export default Collumns;
+export default Columns;
