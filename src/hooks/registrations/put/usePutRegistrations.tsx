@@ -6,6 +6,7 @@ import { PutRegistrationsParams } from "~/services/registrations/put/putRegistra
 
 interface MutateAsyncProps extends PutRegistrationsParams {
   onSuccess?: () => void;
+  onError?: () => void;
 }
 
 export const usePutRegistrations = () => {
@@ -14,7 +15,7 @@ export const usePutRegistrations = () => {
   const [isSuccess, setIsSuccess] = useState<boolean>(false);
   const isError = !!error;
 
-  const mutateAsync = useCallback(async ({ payload, onSuccess }: MutateAsyncProps) => {
+  const mutateAsync = useCallback(async ({ payload, onSuccess, onError }: MutateAsyncProps) => {
     setLoading(true);
 
     await putRegistrations({ payload })
@@ -22,6 +23,7 @@ export const usePutRegistrations = () => {
       onSuccess && onSuccess();
       setIsSuccess(true);
     }).catch((error: AxiosError) => {
+      onError && onError();
       setError(error);
     }).finally(() => {
       setLoading(false);

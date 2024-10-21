@@ -5,6 +5,7 @@ import { DeleteRegistrationsParams } from "~/services/registrations/delete/delet
 
 interface MutateAsyncProps extends DeleteRegistrationsParams {
   onSuccess?: () => void;
+  onError?: () => void;
 }
 
 export const useDeleteRegistrations = () => {
@@ -13,7 +14,7 @@ export const useDeleteRegistrations = () => {
   const [isSuccess, setIsSuccess] = useState<boolean>(false);
   const isError = !!error;
 
-  const mutateAsync = useCallback(async ({ id, onSuccess }: MutateAsyncProps) => {
+  const mutateAsync = useCallback(async ({ id, onSuccess, onError }: MutateAsyncProps) => {
     setLoading(true);
 
     await deleteRegistrations({ id })
@@ -21,6 +22,7 @@ export const useDeleteRegistrations = () => {
       onSuccess && onSuccess();
       setIsSuccess(true);
     }).catch((error: AxiosError) => {
+      onError && onError();
       setError(error);
     }).finally(() => {
       setLoading(false);

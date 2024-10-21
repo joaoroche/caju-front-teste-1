@@ -11,6 +11,7 @@ import { RegistrationProps } from "~/@types/registrations";
 import { useDeleteRegistrations } from "~/hooks/registrations/delete/useDeleteRegistrations";
 import { useCallback, useState } from "react";
 import ActionModal from "~/components/Modal/Action";
+import { toast } from "react-toastify";
 
 const STATUS_RENDER_APPROVED_AND_DISAPPROVED = ["REVIEW"]
 const STATUS_RENDER_REVIEW = ["APPROVED", "REPROVED"]
@@ -29,8 +30,8 @@ const RegistrationCard = (props: Props) => {
     onReject: () => {},
   });
 
-  const { mutateAsync: updatedRegistration } = usePutRegistrations()
-  const { mutateAsync: deleteRegistration } = useDeleteRegistrations()
+  const { mutateAsync: updatedRegistration, error: errorUpdated } = usePutRegistrations()
+  const { mutateAsync: deleteRegistration, error: errorDeleted } = useDeleteRegistrations()
 
   const handleOpenModalConfirmation = useCallback(({
     title,
@@ -72,7 +73,11 @@ const RegistrationCard = (props: Props) => {
             ...props.data,
             status: "APPROVED"
           },
-          onSuccess: () => props.refetch && props.refetch()
+          onSuccess: () => {
+            props.refetch && props.refetch()
+            toast.success(`Colaborador ${props.data.employeeName} aprovado com sucesso!`)
+          },
+          onError: () => toast.error(errorUpdated?.message)
         });
       },
       onReject: handleCloseModalConfirmation
@@ -90,7 +95,11 @@ const RegistrationCard = (props: Props) => {
             ...props.data,
             status: "REPROVED"
           },
-          onSuccess: () => props.refetch && props.refetch()
+          onSuccess: () => {
+            props.refetch && props.refetch()
+            toast.success(`Colaborador ${props.data.employeeName} reprovado com sucesso!`)
+          },
+          onError: () => toast.error(errorUpdated?.message)
         });
       },
       onReject: handleCloseModalConfirmation
@@ -107,7 +116,11 @@ const RegistrationCard = (props: Props) => {
             ...props.data,
             status: "REVIEW"
           },
-          onSuccess: () => props.refetch && props.refetch()
+          onSuccess: () => {
+            props.refetch && props.refetch()
+            toast.success(`Colaborador ${props.data.employeeName} revisado com sucesso!`)
+          },
+          onError: () => toast.error(errorUpdated?.message)
         });
       },
       onReject: handleCloseModalConfirmation
@@ -121,7 +134,11 @@ const RegistrationCard = (props: Props) => {
       onApprove: async () => {
         await deleteRegistration({ 
           id: props.data.id,
-          onSuccess: () => props.refetch && props.refetch()
+          onSuccess: () => {
+            props.refetch && props.refetch()
+            toast.success(`Colaborador ${props.data.employeeName} com sucesso!`)
+          },
+          onError: () => toast.error(errorDeleted?.message)
         });
       },
       onReject: handleCloseModalConfirmation
