@@ -8,6 +8,7 @@ import {
 } from "react-icons/hi";
 import { usePutRegistrations } from "~/hooks/registrations/put/usePutRegistrations";
 import { RegistrationProps } from "~/@types/registrations";
+import { useDeleteRegistrations } from "~/hooks/registrations/delete/useDeleteRegistrations";
 
 type Props = {
   data: RegistrationProps;
@@ -15,10 +16,11 @@ type Props = {
 };
 
 const RegistrationCard = (props: Props) => {
-  const { mutateAsync } = usePutRegistrations()
+  const { mutateAsync: updatedRegistration } = usePutRegistrations()
+  const { mutateAsync: deleteRegistration } = useDeleteRegistrations()
 
   const handleApprove = async () => {
-    await mutateAsync({ 
+    await updatedRegistration({ 
       payload: {
         ...props.data,
         status: "APPROVED"
@@ -28,7 +30,7 @@ const RegistrationCard = (props: Props) => {
   }
 
   const handleDisapprove = async () => {
-    await mutateAsync({ 
+    await updatedRegistration({ 
       payload: {
         ...props.data,
         status: "REPROVED"
@@ -38,11 +40,18 @@ const RegistrationCard = (props: Props) => {
   }
 
   const handleReview = async () => {
-    await mutateAsync({ 
+    await updatedRegistration({ 
       payload: {
         ...props.data,
         status: "REVIEW"
       },
+      onSuccess: () => props.refetch && props.refetch()
+    });
+  }
+
+  const handleDelete = async () => {
+    await deleteRegistration({ 
+      id: props.data.id,
       onSuccess: () => props.refetch && props.refetch()
     });
   }
@@ -100,6 +109,7 @@ const RegistrationCard = (props: Props) => {
           aria-label={`Remover ${props.data.employeeName}`}
           tabIndex={0}
           data-testid="delete-icon"
+          onClick={handleDelete}
         />
       </S.Actions>
     </S.Card>

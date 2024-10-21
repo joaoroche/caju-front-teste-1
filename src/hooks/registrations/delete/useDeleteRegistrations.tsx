@@ -1,23 +1,22 @@
 import { AxiosError } from "axios";
 import { useCallback, useState } from "react";
-import { putRegistrations } from "~/services/registrations/put";
+import { deleteRegistrations } from "~/services/registrations/delete";
+import { DeleteRegistrationsParams } from "~/services/registrations/delete/deleteRegistrationsType";
 
-import { PutRegistrationsParams } from "~/services/registrations/put/putRegistrationsType";
-
-interface MutateAsyncProps extends PutRegistrationsParams {
+interface MutateAsyncProps extends DeleteRegistrationsParams {
   onSuccess?: () => void;
 }
 
-export const usePutRegistrations = () => {
+export const useDeleteRegistrations = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<AxiosError | null>(null);
   const [isSuccess, setIsSuccess] = useState<boolean>(false);
   const isError = !!error;
 
-  const mutateAsync = useCallback(async ({ payload, onSuccess }: MutateAsyncProps) => {
+  const mutateAsync = useCallback(async ({ id, onSuccess }: MutateAsyncProps) => {
     setLoading(true);
 
-    await putRegistrations({ payload })
+    await deleteRegistrations({ id })
     .then(() => {
       onSuccess && onSuccess();
       setIsSuccess(true);
