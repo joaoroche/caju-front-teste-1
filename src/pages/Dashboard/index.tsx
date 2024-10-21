@@ -12,7 +12,7 @@ import * as S from "./styles";
 
 const DashboardPage = () => {
   const { getParam } = useGetQueryParams();
-  const { data, loading, isError, error } = useGetRegistrations({ 
+  const { data, loading, isError, error, refetch } = useGetRegistrations({ 
     params: { cpf: getParam("cpf") || "" }
     });
 
@@ -23,7 +23,7 @@ const DashboardPage = () => {
       {data ? (
         <>
           <SearchBar />
-          <Columns registrations={data} />
+          <Columns registrations={data} refetch={refetch} />
         </>
       ) : null}
     </S.Container>

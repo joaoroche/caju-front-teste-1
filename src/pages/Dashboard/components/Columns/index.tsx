@@ -10,6 +10,7 @@ const allColumns = [
 
 type Props = {
   registrations?: any[];
+  refetch?: () => void;
 };
 const Columns = (props: Props) => {
   return (
@@ -30,6 +31,7 @@ const Columns = (props: Props) => {
                     <RegistrationCard
                       data={registration}
                       key={registration.id}
+                      refetch={props.refetch}
                     />
                   );
                 })}
