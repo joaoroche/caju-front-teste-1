@@ -11,9 +11,9 @@ import { extractNumbers } from "~/utils/functions/extractNumbers";
 
 import * as S from "./styles";
 import { useGetQueryParams } from "~/hooks/window/useGetQueryParams";
-import { formatCpf } from "~/utils/functions/formatCpf";
+import { formatCpf } from "~/utils/functions/formatCPF";
+import { validateCPF } from "~/utils/functions/validateCPF";
 
-const REGEX_CPF_WITHOUT_MASK = /^\d{11}$/;
 
 export const SearchBar = ({ refetch }: {refetch: () => void}) => {
   const history = useHistory();
@@ -34,7 +34,7 @@ export const SearchBar = ({ refetch }: {refetch: () => void}) => {
       
       setSearch(formattedValue);
 
-      const isCpfValid = REGEX_CPF_WITHOUT_MASK.test(valueWithOnlyNumbers);
+      const isCpfValid = validateCPF(valueWithOnlyNumbers);
       setSearchError(!isCpfValid && valueWithOnlyNumbers.length > 0);
 
       if (isCpfValid) {
